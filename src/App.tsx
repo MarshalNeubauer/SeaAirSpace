@@ -6,6 +6,7 @@ import PreviewView from './components/PreviewView';
 import ReportList from './components/ReportList';
 import Footer from './components/Footer';
 import { fetchReports, upsertReport, deleteReport } from './lib/reportService';
+import { initializeSession } from './lib/supabase';
 import { createBlankReport } from './types/report';
 import type { Report } from './types/report';
 
@@ -37,6 +38,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    initializeSession();
     loadReports();
   }, [loadReports]);
 

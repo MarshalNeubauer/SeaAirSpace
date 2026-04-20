@@ -1,11 +1,13 @@
-import { supabase } from './supabase';
+import { supabase, getClientSessionId } from './supabase';
 import { normalizeReport } from '../types/report';
 import type { Report } from '../types/report';
 
 export async function fetchReports(): Promise<Report[]> {
+  const sessionId = getClientSessionId();
   const { data, error } = await supabase
     .from('field_reports')
     .select('*')
+    .eq('session_id', sessionId)
     .order('updated_at', { ascending: false });
 
   if (error) throw error;
@@ -13,6 +15,7 @@ export async function fetchReports(): Promise<Report[]> {
 }
 
 export async function upsertReport(report: Report): Promise<Report> {
+  const sessionId = getClientSessionId();
   const { data, error } = await supabase
     .from('field_reports')
     .upsert({
@@ -25,6 +28,7 @@ export async function upsertReport(report: Report): Promise<Report> {
       background: report.background,
       discussion: report.discussion,
       recommendation: report.recommendation,
+      session_id: sessionId,
     })
     .select()
     .single();

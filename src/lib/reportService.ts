@@ -1,9 +1,9 @@
-import { supabase, getClientSessionId } from './supabase';
+import { supabase, getSessionId } from './supabase';
 import { normalizeReport } from '../types/report';
 import type { Report } from '../types/report';
 
 export async function fetchReports(): Promise<Report[]> {
-  const sessionId = getClientSessionId();
+  const sessionId = getSessionId();
   const { data, error } = await supabase
     .from('field_reports')
     .select('*')
@@ -15,7 +15,7 @@ export async function fetchReports(): Promise<Report[]> {
 }
 
 export async function upsertReport(report: Report): Promise<Report> {
-  const sessionId = getClientSessionId();
+  const sessionId = getSessionId();
   const { data, error } = await supabase
     .from('field_reports')
     .upsert({

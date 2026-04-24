@@ -92,7 +92,7 @@ export default function App() {
       )}
 
       <main className="flex-1 overflow-y-auto">
-        <div className="max-w-xl mx-auto p-4 space-y-6">
+        <div className={`mx-auto p-4 space-y-6 ${view === 'preview' ? 'max-w-5xl' : 'max-w-xl'}`}>
           {view === 'edit' && <EditView report={report} onChange={setReport} />}
           {view === 'preview' && <PreviewView report={report} />}
           {view === 'list' && (

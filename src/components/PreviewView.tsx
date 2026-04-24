@@ -34,97 +34,108 @@ RECOMMENDATIONS:
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex gap-2 no-print">
         <button
           onClick={copyToClipboard}
-          className="flex-1 bg-slate-800 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform"
+          className="flex-1 bg-slate-800 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform"
         >
-          {copied ? <CheckCircle2 size={18} /> : <Copy size={18} />}
+          {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
           {copied ? 'COPIED' : 'COPY TEXT'}
         </button>
         <button
           onClick={() => window.print()}
-          className="px-4 bg-white border py-3 rounded-lg hover:bg-slate-50 transition-colors"
+          className="px-4 bg-white border py-2.5 rounded-lg hover:bg-slate-50 transition-colors"
         >
-          <Download size={18} />
+          <Download size={16} />
         </button>
       </div>
 
-      <div className="bg-white shadow-2xl border min-h-[800px] p-8 text-[11pt] leading-tight space-y-6 print:shadow-none print:border-none">
-        <div className="flex justify-between items-center border-b-4 border-yellow-500 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center text-white font-serif font-bold text-xs text-center border-2 border-yellow-500">
-              DSCA
-            </div>
-            <div>
-              <h1 className="text-xl font-black uppercase text-blue-900 tracking-tighter">
+      {/* Slide — 16:9 landscape aspect */}
+      <div className="bg-white shadow-2xl border rounded-sm overflow-hidden print:shadow-none print:border-none" style={{ aspectRatio: '16/9' }}>
+        <div className="h-full flex flex-col">
+          {/* Header bar */}
+          <div className="flex items-center justify-between bg-blue-900 px-6 py-3 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-yellow-500 rounded-full flex items-center justify-center text-blue-900 font-serif font-black text-[10px] text-center leading-none">
+                DSCA
+              </div>
+              <h1 className="text-white font-black uppercase tracking-tight text-base">
                 {report.company || 'COMPANY'} — Final Report
               </h1>
             </div>
-          </div>
-          <div className="text-right text-[10px] font-bold text-slate-400">
-            SAS {report.event.slice(-4)}
-          </div>
-        </div>
-
-        <div className="border-y-2 border-slate-800 py-2 text-center">
-          <h2 className="text-md font-bold underline">
-            Title: {report.title || 'Meeting Summary Report'}
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-2 gap-8 text-[10pt]">
-          <div className="space-y-6">
-            <section>
-              <h3 className="font-bold underline uppercase mb-2">Purpose:</h3>
-              <p>{report.purpose}</p>
-            </section>
-
-            <section>
-              <h3 className="font-bold underline uppercase mb-2">Bottom Line:</h3>
-              <ul className="list-disc ml-5 space-y-1">
-                {report.bottom_line
-                  .filter((b) => b.trim())
-                  .map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-              </ul>
-            </section>
-
-            <section>
-              <h3 className="font-bold underline uppercase mb-2">Background:</h3>
-              <ul className="list-disc ml-5 space-y-1">
-                {report.background
-                  .filter((b) => b.trim())
-                  .map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-              </ul>
-            </section>
+            <div className="text-yellow-500 text-[10px] font-bold tracking-widest">
+              {report.event || 'EVENT'}
+            </div>
           </div>
 
-          <div className="space-y-6">
-            <section>
-              <h3 className="font-bold underline uppercase mb-2">Discussion:</h3>
-              <ul className="list-disc ml-5 space-y-1">
-                {report.discussion
-                  .filter((n) => n.trim())
-                  .map((n, i) => (
-                    <li key={i}>{n}</li>
-                  ))}
-              </ul>
-            </section>
-
-            <section className="mt-8">
-              <h3 className="font-bold underline uppercase mb-2">Way Ahead/Recommendation:</h3>
-              <p className="italic">• {report.recommendation}</p>
-            </section>
+          {/* Title strip */}
+          <div className="bg-yellow-500 px-6 py-1.5 shrink-0">
+            <h2 className="text-blue-900 font-bold text-sm uppercase tracking-wide">
+              {report.title || 'Meeting Summary Report'}
+            </h2>
           </div>
-        </div>
 
-        <div className="pt-20 text-[9px] text-slate-400 italic border-t flex justify-between">
-          <span>FIELD_REPORT</span>
+          {/* Body — 3-column layout */}
+          <div className="flex-1 grid grid-cols-3 gap-0 text-[10pt] leading-snug overflow-hidden">
+            {/* Left column */}
+            <div className="p-5 space-y-4 border-r border-slate-200 overflow-hidden">
+              <section>
+                <h3 className="font-bold uppercase text-[9pt] tracking-wider text-blue-900 mb-1 border-b border-blue-900/20 pb-0.5">Purpose</h3>
+                <p className="text-slate-700">{report.purpose}</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold uppercase text-[9pt] tracking-wider text-blue-900 mb-1 border-b border-blue-900/20 pb-0.5">Bottom Line</h3>
+                <ul className="list-disc ml-4 space-y-0.5 text-slate-700">
+                  {report.bottom_line
+                    .filter((b) => b.trim())
+                    .map((b, i) => (
+                      <li key={i}>{b}</li>
+                    ))}
+                </ul>
+              </section>
+            </div>
+
+            {/* Center column */}
+            <div className="p-5 space-y-4 border-r border-slate-200 overflow-hidden">
+              <section>
+                <h3 className="font-bold uppercase text-[9pt] tracking-wider text-blue-900 mb-1 border-b border-blue-900/20 pb-0.5">Background</h3>
+                <ul className="list-disc ml-4 space-y-0.5 text-slate-700">
+                  {report.background
+                    .filter((b) => b.trim())
+                    .map((b, i) => (
+                      <li key={i}>{b}</li>
+                    ))}
+                </ul>
+              </section>
+            </div>
+
+            {/* Right column */}
+            <div className="p-5 space-y-4 overflow-hidden">
+              <section>
+                <h3 className="font-bold uppercase text-[9pt] tracking-wider text-blue-900 mb-1 border-b border-blue-900/20 pb-0.5">Discussion</h3>
+                <ul className="list-disc ml-4 space-y-0.5 text-slate-700">
+                  {report.discussion
+                    .filter((n) => n.trim())
+                    .map((n, i) => (
+                      <li key={i}>{n}</li>
+                    ))}
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="font-bold uppercase text-[9pt] tracking-wider text-blue-900 mb-1 border-b border-blue-900/20 pb-0.5">Way Ahead / Recommendation</h3>
+                <p className="italic text-slate-700">• {report.recommendation}</p>
+              </section>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="bg-slate-100 px-6 py-1.5 flex justify-between items-center shrink-0 border-t border-slate-200">
+            <span className="text-[8px] text-slate-400 font-semibold tracking-widest uppercase">Field Report</span>
+            <span className="text-[8px] text-slate-400">DSCA Liaison Division</span>
+          </div>
         </div>
       </div>
     </div>

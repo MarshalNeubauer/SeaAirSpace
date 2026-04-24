@@ -1,10 +1,16 @@
 import { useState } from 'react';
-import { Copy, CheckCircle2, Download } from 'lucide-react';
+import { Copy, CheckCircle2, Download, FileDown } from 'lucide-react';
+import PptxGenJS from 'pptxgenjs';
 import type { Report } from '../types/report';
 
 interface PreviewViewProps {
   report: Report;
 }
+
+const BLUE_900 = '1E3A5F';
+const YELLOW_500 = 'EAB308';
+const SLATE_700 = '334155';
+const SLATE_400 = '94A3B8';
 
 export default function PreviewView({ report }: PreviewViewProps) {
   const [copied, setCopied] = useState(false);
@@ -33,6 +39,114 @@ RECOMMENDATIONS:
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const exportPptx = () => {
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_WIDE';
+
+    const slide = pptx.addSlide();
+
+    // Header bar background
+    slide.addShape(pptx.ShapeType.rect, {
+      x: 0, y: 0, w: '100%', h: 0.7,
+      fill: { color: BLUE_900 },
+    });
+
+    // DSCA circle
+    slide.addShape(pptx.ShapeType.ellipse, {
+      x: 0.35, y: 0.12, w: 0.45, h: 0.45,
+      fill: { color: YELLOW_500 },
+    });
+    slide.addText('DSCA', {
+      x: 0.35, y: 0.12, w: 0.45, h: 0.45,
+      fontSize: 9, bold: true, color: BLUE_900,
+      align: 'center', valign: 'middle',
+    });
+
+    // Company title
+    slide.addText(`${report.company || 'COMPANY'} — Final Report`, {
+      x: 0.95, y: 0.1, w: 7, h: 0.5,
+      fontSize: 18, bold: true, color: 'FFFFFF',
+      valign: 'middle',
+    });
+
+    // Event label
+    slide.addText(report.event || 'EVENT', {
+      x: 9, y: 0.1, w: 3.5, h: 0.5,
+      fontSize: 9, bold: true, color: YELLOW_500,
+      align: 'right', valign: 'middle',
+    });
+
+    // Yellow title strip
+    slide.addShape(pptx.ShapeType.rect, {
+      x: 0, y: 0.7, w: '100%', h: 0.35,
+      fill: { color: YELLOW_500 },
+    });
+    slide.addText(report.title || 'Meeting Summary Report', {
+      x: 0.35, y: 0.7, w: 12, h: 0.35,
+      fontSize: 12, bold: true, color: BLUE_900,
+      valign: 'middle',
+    });
+
+    // Column positions (inches)
+    const colX = [0.35, 4.35, 8.35];
+    const colW = 3.65;
+    const bodyY = 1.25;
+
+    // Section helper
+    const addSection = (title: string, body: string, x: number, y: number, maxH: number) => {
+      slide.addText(title, {
+        x, y, w: colW, h: 0.28,
+        fontSize: 8, bold: true, color: BLUE_900,
+      });
+      slide.addShape(pptx.ShapeType.line, {
+        x, y: y + 0.28, w: colW, h: 0,
+        line: { color: BLUE_900, width: 0.5, dashType: 'solid' },
+      });
+      slide.addText(body, {
+        x, y: y + 0.35, w: colW, h: maxH - 0.35,
+        fontSize: 9, color: SLATE_700,
+        valign: 'top', wrap: true,
+      });
+    };
+
+    // Left column — Purpose
+    addSection('PURPOSE', report.purpose, colX[0], bodyY, 2.5);
+
+    // Left column — Bottom Line
+    const bottomLineItems = report.bottom_line.filter((b) => b.trim());
+    addSection('BOTTOM LINE', bottomLineItems.map((b) => `• ${b}`).join('\n'), colX[0], bodyY + 2.7, 3.5);
+
+    // Center column — Background
+    const bgItems = report.background.filter((b) => b.trim());
+    addSection('BACKGROUND', bgItems.map((b) => `• ${b}`).join('\n'), colX[1], bodyY, 6.2);
+
+    // Right column — Discussion
+    const discItems = report.discussion.filter((n) => n.trim());
+    addSection('DISCUSSION', discItems.map((n) => `• ${n}`).join('\n'), colX[2], bodyY, 3.5);
+
+    // Right column — Way Ahead
+    addSection('WAY AHEAD / RECOMMENDATION', report.recommendation, colX[2], bodyY + 3.7, 2.5);
+
+    // Footer bar
+    slide.addShape(pptx.ShapeType.rect, {
+      x: 0, y: 7.15, w: '100%', h: 0.35,
+      fill: { color: 'F1F5F9' },
+    });
+    slide.addText('FIELD REPORT', {
+      x: 0.35, y: 7.15, w: 3, h: 0.35,
+      fontSize: 7, bold: true, color: SLATE_400,
+      valign: 'middle',
+    });
+    slide.addText('DSCA Liaison Division', {
+      x: 9, y: 7.15, w: 3.5, h: 0.35,
+      fontSize: 7, color: SLATE_400,
+      align: 'right', valign: 'middle',
+    });
+
+    const fileName = `${(report.company || 'company').replace(/\s+/g, '_')}_${(report.title || 'report').replace(/\s+/g, '_')}`;
+    pptx.writeFile({ fileName: `${fileName}.pptx` });
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2 no-print">
@@ -42,6 +156,13 @@ RECOMMENDATIONS:
         >
           {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
           {copied ? 'COPIED' : 'COPY TEXT'}
+        </button>
+        <button
+          onClick={exportPptx}
+          className="flex-1 bg-blue-900 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform"
+        >
+          <FileDown size={16} />
+          EXPORT PPTX
         </button>
         <button
           onClick={() => window.print()}

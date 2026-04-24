@@ -126,7 +126,7 @@ RECOMMENDATIONS:
 
               <section>
                 <h3 className="font-bold uppercase text-[9pt] tracking-wider text-blue-900 mb-1 border-b border-blue-900/20 pb-0.5">Way Ahead / Recommendation</h3>
-                <p className="italic text-slate-700">• {report.recommendation}</p>
+                <p className="text-slate-700">• {report.recommendation}</p>
               </section>
             </div>
           </div>

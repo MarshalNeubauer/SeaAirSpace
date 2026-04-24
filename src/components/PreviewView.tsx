@@ -53,79 +53,79 @@ RECOMMENDATIONS:
 
     // DSCA circle
     slide.addShape(pptx.ShapeType.ellipse, {
-      x: 0.35, y: 0.12, w: 0.45, h: 0.45,
+      x: 0.35, y: 0.15, w: 0.55, h: 0.55,
       fill: { color: YELLOW_500 },
     });
     slide.addText('DSCA', {
-      x: 0.35, y: 0.12, w: 0.45, h: 0.45,
-      fontSize: 9, bold: true, color: BLUE_900,
+      x: 0.35, y: 0.15, w: 0.55, h: 0.55,
+      fontSize: 12, bold: true, color: BLUE_900,
       align: 'center', valign: 'middle',
     });
 
     // Company title
     slide.addText(`${report.company || 'COMPANY'} — Final Report`, {
-      x: 0.95, y: 0.1, w: 7, h: 0.5,
-      fontSize: 18, bold: true, color: 'FFFFFF',
+      x: 1.05, y: 0.1, w: 7, h: 0.65,
+      fontSize: 22, bold: true, color: 'FFFFFF',
       valign: 'middle',
     });
 
     // Event label
     slide.addText(report.event || 'EVENT', {
-      x: 9, y: 0.1, w: 3.5, h: 0.5,
-      fontSize: 9, bold: true, color: YELLOW_500,
+      x: 9, y: 0.1, w: 3.5, h: 0.65,
+      fontSize: 12, bold: true, color: YELLOW_500,
       align: 'right', valign: 'middle',
     });
 
     // Yellow title strip
     slide.addShape(pptx.ShapeType.rect, {
-      x: 0, y: 0.7, w: '100%', h: 0.35,
+      x: 0, y: 0.85, w: '100%', h: 0.45,
       fill: { color: YELLOW_500 },
     });
     slide.addText(report.title || 'Meeting Summary Report', {
-      x: 0.35, y: 0.7, w: 12, h: 0.35,
-      fontSize: 12, bold: true, color: BLUE_900,
+      x: 0.35, y: 0.85, w: 12, h: 0.45,
+      fontSize: 16, bold: true, color: BLUE_900,
       valign: 'middle',
     });
 
     // Column positions (inches)
     const colX = [0.35, 4.35, 8.35];
     const colW = 3.65;
-    const bodyY = 1.25;
+    const bodyY = 1.55;
 
     // Section helper
     const addSection = (title: string, body: string, x: number, y: number, maxH: number) => {
       slide.addText(title, {
-        x, y, w: colW, h: 0.28,
-        fontSize: 8, bold: true, color: BLUE_900,
+        x, y, w: colW, h: 0.35,
+        fontSize: 11, bold: true, color: BLUE_900,
       });
       slide.addShape(pptx.ShapeType.line, {
-        x, y: y + 0.28, w: colW, h: 0,
-        line: { color: BLUE_900, width: 0.5, dashType: 'solid' },
+        x, y: y + 0.35, w: colW, h: 0,
+        line: { color: BLUE_900, width: 0.75, dashType: 'solid' },
       });
       slide.addText(body, {
-        x, y: y + 0.35, w: colW, h: maxH - 0.35,
-        fontSize: 9, color: SLATE_700,
+        x, y: y + 0.42, w: colW, h: maxH - 0.42,
+        fontSize: 12, color: SLATE_700,
         valign: 'top', wrap: true,
       });
     };
 
     // Left column — Purpose
-    addSection('PURPOSE', report.purpose, colX[0], bodyY, 2.5);
+    addSection('PURPOSE', report.purpose, colX[0], bodyY, 2.8);
 
     // Left column — Bottom Line
     const bottomLineItems = report.bottom_line.filter((b) => b.trim());
-    addSection('BOTTOM LINE', bottomLineItems.map((b) => `• ${b}`).join('\n'), colX[0], bodyY + 2.7, 3.5);
+    addSection('BOTTOM LINE', bottomLineItems.map((b) => `• ${b}`).join('\n'), colX[0], bodyY + 3.0, 3.7);
 
     // Center column — Background
     const bgItems = report.background.filter((b) => b.trim());
-    addSection('BACKGROUND', bgItems.map((b) => `• ${b}`).join('\n'), colX[1], bodyY, 6.2);
+    addSection('BACKGROUND', bgItems.map((b) => `• ${b}`).join('\n'), colX[1], bodyY, 6.7);
 
     // Right column — Discussion
     const discItems = report.discussion.filter((n) => n.trim());
-    addSection('DISCUSSION', discItems.map((n) => `• ${n}`).join('\n'), colX[2], bodyY, 3.5);
+    addSection('DISCUSSION', discItems.map((n) => `• ${n}`).join('\n'), colX[2], bodyY, 3.7);
 
     // Right column — Way Ahead
-    addSection('WAY AHEAD / RECOMMENDATION', report.recommendation, colX[2], bodyY + 3.7, 2.5);
+    addSection('WAY AHEAD / RECOMMENDATION', report.recommendation, colX[2], bodyY + 4.0, 2.7);
 
     // Footer bar
     slide.addShape(pptx.ShapeType.rect, {
@@ -134,12 +134,12 @@ RECOMMENDATIONS:
     });
     slide.addText('FIELD REPORT', {
       x: 0.35, y: 7.15, w: 3, h: 0.35,
-      fontSize: 7, bold: true, color: SLATE_400,
+      fontSize: 9, bold: true, color: SLATE_400,
       valign: 'middle',
     });
     slide.addText('DSCA Liaison Division', {
       x: 9, y: 7.15, w: 3.5, h: 0.35,
-      fontSize: 7, color: SLATE_400,
+      fontSize: 9, color: SLATE_400,
       align: 'right', valign: 'middle',
     });
 
